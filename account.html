@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Account</title>
+  <link rel="stylesheet" href="style.css"/>
+  <script type="module" src="account.js"></script>
+</head>
+<body>
+  <div class="wallpaper"></div>
+
+  <!-- Header -->
+  <header class="glass-header">
+    <img src="logo.png" alt="Logo" class="logo">
+    <h2>My Account</h2>
+  </header>
+
+  <!-- Profile Section -->
+  <div class="glass-card">
+    <h3>Profile</h3>
+    <div class="profile-pic">
+      <img id="profileImg" src="default-profile.png" alt="Profile">
+      <input type="file" id="uploadPic" accept="image/*">
+    </div>
+    <input type="text" id="firstName" placeholder="First Name">
+    <input type="text" id="lastName" placeholder="Last Name">
+    <input type="date" id="birthday">
+    <input type="email" id="email" placeholder="Email">
+    <input type="tel" id="phone" placeholder="Phone Number">
+    <select id="gender">
+      <option value="">Select Gender</option>
+      <option value="male">Male</option>
+      <option value="female">Female</option>
+    </select>
+  </div>
+
+  <!-- Address Section -->
+  <div class="glass-card">
+    <h3>Addresses</h3>
+    <label>Home Address</label>
+    <textarea id="homeAddress" placeholder="Enter home address"></textarea>
+
+    <label>Office Address</label>
+    <textarea id="officeAddress" placeholder="Enter office address"></textarea>
+  </div>
+
+  <!-- Settings -->
+  <div class="glass-card">
+    <h3>Settings</h3>
+    <button id="toggleTheme" class="btn-gold">Switch Theme</button>
+  </div>
+
+  <!-- Bottom Nav -->
+  <nav class="bottom-nav glass-card">
+    <a href="index.html">🏠 Home</a>
+    <a href="cart.html">🛒 Cart</a>
+    <a href="orders.html">📦 Orders</a>
+    <a href="account.html" class="active">👤 Account</a>
+  </nav>
+</body>
+</html>
