@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Login</title>
+</head>
+<body>
+<h2>Login or Create Account</h2>
+
+<input id="email" type="email" placeholder="Email"><br><br>
+<input id="password" type="password" placeholder="Password"><br><br>
+<button id="btnSignIn">Sign In</button>
+<button id="btnSignUp">Sign Up</button>
+<button id="btnSignOut" style="display:none">Sign Out</button>
+
+<p id="status"></p>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signInWithEmailAndPassword,
+           createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyD2-n2E63mxeYwQBfyIDd-OmRMQzu3z9xw",
+    authDomain: "all-hall-shop.firebaseapp.com",
+    databaseURL: "https://all-hall-shop-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "all-hall-shop",
+    storageBucket: "all-hall-shop.firebasestorage.app",
+    messagingSenderId: "741136437274",
+    appId: "1:741136437274:web:86931f347cd0127faf81a3",
+    measurementId: "G-5148LZX8G3"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  const email = document.getElementById('email');
+  const password = document.getElementById('password');
+  const statusEl = document.getElementById('status');
+  const btnIn = document.getElementById('btnSignIn');
+  const btnUp = document.getElementById('btnSignUp');
+  const btnOut = document.getElementById('btnSignOut');
+
+  btnIn.onclick = async () => {
+    try {
+      await signInWithEmailAndPassword(auth, email.value, password.value);
+    } catch (e) { statusEl.textContent = e.message; }
+  };
+  btnUp.onclick = async () => {
+    try {
+      await createUserWithEmailAndPassword(auth, email.value, password.value);
+    } catch (e) { statusEl.textContent = e.message; }
+  };
+  btnOut.onclick = async () => { await signOut(auth); };
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      statusEl.textContent = `Signed in as ${user.email}`;
+      btnOut.style.display = 'inline-block';
+      // Go to catalog
+      window.location.href = 'index.html';
+    } else {
+      statusEl.textContent = 'Not signed in';
+      btnOut.style.display = 'none';
+    }
+  });
+</script>
+</body>
+</html>
