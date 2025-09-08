@@ -1,8 +1,6 @@
-// Import Firebase + Cloudinary
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+import { getDatabase, ref, get, set, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-// Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyD2-n2E63mxeYwQBfyIDd-OmRMQzu3z9xw",
   authDomain: "all-hall-shop.firebaseapp.com",
@@ -15,78 +13,90 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// Fake user id (replace with Firebase Auth later)
-const userId = "user123";
+const userId = "user123"; // TODO: replace with Firebase Auth later
 
-// DOM elements
-const profileImg = document.getElementById("profileImg");
-const uploadPic = document.getElementById("uploadPic");
+// UI Elements
+const uploadProfilePic = document.getElementById("uploadProfilePic");
+const profileImage = document.getElementById("profileImage");
+const fields = ["firstName", "lastName", "email", "phone", "birthday", "gender"];
+const addressList = document.getElementById("addressList");
+const addAddressBtn = document.getElementById("addAddressBtn");
+const darkModeToggle = document.getElementById("darkModeToggle");
 
-const firstName = document.getElementById("firstName");
-const lastName = document.getElementById("lastName");
-const birthday = document.getElementById("birthday");
-const email = document.getElementById("email");
-const phone = document.getElementById("phone");
-const gender = document.getElementById("gender");
-
-const homeAddress = document.getElementById("homeAddress");
-const officeAddress = document.getElementById("officeAddress");
-
-// Load profile from Firebase
+// Load profile data
 async function loadProfile() {
   const snap = await get(ref(db, "users/" + userId));
-  if (snap.exists()) {
-    const data = snap.val();
-    firstName.value = data.firstName || "";
-    lastName.value = data.lastName || "";
-    birthday.value = data.birthday || "";
-    email.value = data.email || "";
-    phone.value = data.phone || "";
-    gender.value = data.gender || "";
-    homeAddress.value = data.homeAddress || "";
-    officeAddress.value = data.officeAddress || "";
-    profileImg.src = data.profileImg || "default-profile.png";
+  if (!snap.exists()) return;
+  const user = snap.val();
+
+  fields.forEach(f => {
+    if (user[f]) document.getElementById(f).value = user[f];
+  });
+  if (user.profilePic) profileImage.src = user.profilePic;
+  if (user.addresses) {
+    addressList.innerHTML = "";
+    Object.entries(user.addresses).forEach(([key, addr]) => {
+      const div = document.createElement("div");
+      div.className = "address glass-subcard";
+      div.innerHTML = `
+        <p><b>${key}</b>: ${addr.line}, ${addr.town}, ${addr.district}</p>
+      `;
+      addressList.appendChild(div);
+    });
+  }
+  if (localStorage.getItem("darkMode") === "true") {
+    document.body.classList.add("dark");
+    darkModeToggle.checked = true;
   }
 }
 loadProfile();
 
-// Auto-save to Firebase
-function saveProfile() {
-  set(ref(db, "users/" + userId), {
-    firstName: firstName.value,
-    lastName: lastName.value,
-    birthday: birthday.value,
-    email: email.value,
-    phone: phone.value,
-    gender: gender.value,
-    homeAddress: homeAddress.value,
-    officeAddress: officeAddress.value,
-    profileImg: profileImg.src,
+// Save profile on change
+fields.forEach(f => {
+  document.getElementById(f).addEventListener("change", e => {
+    update(ref(db, "users/" + userId), { [f]: e.target.value });
   });
-}
-[firstName, lastName, birthday, email, phone, gender, homeAddress, officeAddress]
-  .forEach(el => el.addEventListener("change", saveProfile));
+});
 
 // Upload profile picture to Cloudinary
-uploadPic.addEventListener("change", async (e) => {
+uploadProfilePic.addEventListener("change", async (e) => {
   const file = e.target.files[0];
   if (!file) return;
 
   let formData = new FormData();
   formData.append("file", file);
-  formData.append("upload_preset", "shop_unsigned");
+  formData.append("upload_preset", "ml_default"); // 🔥 replace with your Cloudinary preset
 
   const res = await fetch("https://api.cloudinary.com/v1_1/dzgsde4su/image/upload", {
     method: "POST",
     body: formData
   });
   const data = await res.json();
-  profileImg.src = data.secure_url;
-  saveProfile();
+  profileImage.src = data.secure_url;
+  update(ref(db, "users/" + userId), { profilePic: data.secure_url });
 });
 
-// Theme toggle
-document.getElementById("toggleTheme").addEventListener("click", () => {
-  document.body.classList.toggle("light-mode");
-  localStorage.setItem("theme", document.body.classList.contains("light-mode") ? "light" : "dark");
+// Add new address
+addAddressBtn.addEventListener("click", () => {
+  const label = prompt("Address label (Home / Office / Other):");
+  const line = prompt("Street + Number:");
+  const town = prompt("Town:");
+  const district = prompt("District:");
+  if (label && line) {
+    update(ref(db, "users/" + userId + "/addresses"), {
+      [label]: { line, town, district }
+    });
+    loadProfile();
+  }
+});
+
+// Dark Mode toggle
+darkModeToggle.addEventListener("change", (e) => {
+  if (e.target.checked) {
+    document.body.classList.add("dark");
+    localStorage.setItem("darkMode", "true");
+  } else {
+    document.body.classList.remove("dark");
+    localStorage.setItem("darkMode", "false");
+  }
 });
