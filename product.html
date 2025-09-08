@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Product</title>
+</head>
+<body>
+<a href="index.html">← Back</a>
+<h1 id="title"></h1>
+<img id="img" width="250" alt="product"><br>
+<p id="price"></p>
+<p id="desc"></p>
+<p><a id="checkout">Go to Checkout</a></p>
+
+<script>
+  const qs = new URLSearchParams(location.search);
+  const item = qs.get('item');
+  const price = qs.get('price');
+  const desc = qs.get('desc');
+  const img = qs.get('img');
+
+  document.getElementById('title').textContent = item;
+  document.getElementById('price').textContent = "Price: " + price;
+  document.getElementById('desc').textContent = desc;
+  document.getElementById('img').src = img;
+
+  const toCheckout = `checkout.html?item=${encodeURIComponent(item)}&price=${encodeURIComponent(price)}&img=${encodeURIComponent(img)}`;
+  document.getElementById('checkout').href = toCheckout;
+</script>
+</body>
+</html>
