@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Catalog</title>
+</head>
+<body>
+<h1>My Shop</h1>
+<div id="list"></div>
+<p><a href="admin.html">Admin</a></p>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyD2-n2E63mxeYwQBfyIDd-OmRMQzu3z9xw",
+    authDomain: "all-hall-shop.firebaseapp.com",
+    databaseURL: "https://all-hall-shop-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "all-hall-shop",
+    storageBucket: "all-hall-shop.firebasestorage.app",
+    messagingSenderId: "741136437274",
+    appId: "1:741136437274:web:86931f347cd0127faf81a3",
+    measurementId: "G-5148LZX8G3"
+  };
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  onAuthStateChanged(auth, (user) => {
+    if (!user) window.location.href = 'login.html';
+  });
+
+  // 👇 Replace with your Cloudinary image URLs
+  const products = [
+    { name: "Blue Shoes", price: "$50", desc: "Comfortable running shoes",
+      img: "https://res.cloudinary.com/demo/image/upload/sample.jpg" },
+    { name: "Red T-Shirt", price: "$20", desc: "Cotton t-shirt",
+      img: "https://res.cloudinary.com/demo/image/upload/sample.jpg" },
+    { name: "Black Bag", price: "$35", desc: "Stylish leather bag",
+      img: "https://res.cloudinary.com/demo/image/upload/sample.jpg" }
+  ];
+
+  const list = document.getElementById('list');
+  products.forEach(p => {
+    const link = `product.html?item=${encodeURIComponent(p.name)}&price=${encodeURIComponent(p.price)}&desc=${encodeURIComponent(p.desc)}&img=${encodeURIComponent(p.img)}`;
+    const card = document.createElement('div');
+    card.innerHTML = `
+      <img src="${p.img}" alt="${p.name}" width="200"><br>
+      <b>${p.name}</b> — ${p.price}<br>
+      <a href="${link}">View</a>
+      <hr>`;
+    list.appendChild(card);
+  });
+</script>
+</body>
+</html>
