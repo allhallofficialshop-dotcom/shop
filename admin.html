@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Admin</title>
+</head>
+<body>
+<h2>Admin – Orders</h2>
+<p id="gate"></p>
+<table border="1" cellpadding="6">
+  <thead>
+    <tr>
+      <th>Time</th><th>Email</th><th>Item</th><th>Color</th><th>Qty</th><th>Address</th><th>Status</th><th>Update</th>
+    </tr>
+  </thead>
+  <tbody id="rows"></tbody>
+</table>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyD2-n2E63mxeYwQBfyIDd-OmRMQzu3z9xw",
+    authDomain: "all-hall-shop.firebaseapp.com",
+    databaseURL: "https://all-hall-shop-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "all-hall-shop",
+    storageBucket: "all-hall-shop.firebasestorage.app",
+    messagingSenderId: "741136437274",
+    appId: "1:741136437274:web:86931f347cd0127faf81a3",
+    measurementId: "G-5148LZX8G3"
+  };
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getDatabase(app);
+
+  const ADMIN_EMAIL = "YOUR_ADMIN_EMAIL@example.com";
+  const gate = document.getElementById('gate');
+  const rows = document.getElementById('rows');
+
+  onAuthStateChanged(auth, (user) => {
+    if (!user) { gate.textContent = "Please sign in at login.html"; return; }
+    if (user.email !== ADMIN_EMAIL) { gate.textContent = "No access"; return; }
+    gate.textContent = "Signed in as admin: " + user.email;
+
+    const ordersRef = ref(db, 'orders');
+    onValue(ordersRef, (snap) => {
+      rows.innerHTML = "";
+      const data = snap.val() || {};
+      Object.values(data).sort((a,b)=>a.createdAt-b.createdAt).forEach(o => {
+        const tr = document.createElement('tr');
+        const time = new Date(o.createdAt).toLocaleString();
+        tr.innerHTML = `
+          <td>${time}</td>
+          <td>${o.userEmail}</td>
+          <td>${o.item} (${o.price})</td>
+          <td>${o.color}</td>
+          <td>${o.qty}</td>
+          <td>${o.address}</td>
+          <td>${o.status}</td>
+          <td>
+            <select data-id="${o.id}">
+              <option ${o.status==="Pending"?"selected":""}>Pending</option>
+              <option ${o.status==="Shipped"?"selected":""}>Shipped</option>
+              <option ${o.status==="Delivered"?"selected":""}>Delivered</option>
+            </select>
+          </td>`;
+        rows.appendChild(tr);
+      });
+
+      rows.querySelectorAll('select').forEach(sel => {
+        sel.onchange = async (e) => {
+          const id = e.target.getAttribute('data-id');
+          await update(ref(db, 'orders/'+id), { status: e.target.value });
+        };
+      });
+    });
+  });
+</script>
+</body>
+</html>
