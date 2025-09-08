@@ -1,86 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Checkout</title>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Checkout</title>
+  <link rel="stylesheet" href="style.css"/>
+  <script type="module" src="checkout.js"></script>
 </head>
 <body>
-<h2>Checkout</h2>
+  <div class="wallpaper"></div>
 
-<p id="productLine"></p>
-<form id="f">
-  <input id="color" placeholder="Color" required><br><br>
-  <input id="qty" type="number" min="1" value="1" required><br><br>
-  <textarea id="address" placeholder="Delivery Address" required></textarea><br><br>
-  <button type="submit">Place Order</button>
-</form>
-<p id="msg"></p>
+  <!-- Header -->
+  <header class="glass-header">
+    <img src="logo.png" alt="Logo" class="logo">
+    <h2>Checkout</h2>
+  </header>
 
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+  <!-- Order Summary -->
+  <div class="glass-card" id="orderSummary"></div>
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyD2-n2E63mxeYwQBfyIDd-OmRMQzu3z9xw",
-    authDomain: "all-hall-shop.firebaseapp.com",
-    databaseURL: "https://all-hall-shop-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "all-hall-shop",
-    storageBucket: "all-hall-shop.firebasestorage.app",
-    messagingSenderId: "741136437274",
-    appId: "1:741136437274:web:86931f347cd0127faf81a3",
-    measurementId: "G-5148LZX8G3"
-  };
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getDatabase(app);
+  <!-- Address Selection -->
+  <div class="glass-card">
+    <h3>Select Address</h3>
+    <label><input type="radio" name="address" value="home"> Home</label>
+    <label><input type="radio" name="address" value="office"> Office</label>
+  </div>
 
-  const qs = new URLSearchParams(location.search);
-  const item = qs.get('item'); const price = qs.get('price'); const img = qs.get('img');
-  document.getElementById('productLine').textContent = `${item} — ${price}`;
+  <!-- Payment -->
+  <div class="glass-card">
+    <h3>Payment Method</h3>
+    <label><input type="radio" name="payment" value="cod"> Cash on Delivery</label>
+    <label><input type="radio" name="payment" value="bank"> Bank Transfer</label>
+  </div>
 
-  onAuthStateChanged(auth, (user) => {
-    if (!user) location.href = 'login.html';
-  });
+  <!-- Place Order -->
+  <div class="glass-card">
+    <button id="placeOrder" class="btn-gold">Place Order</button>
+  </div>
 
-  document.getElementById('f').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const user = auth.currentUser;
-    const color = document.getElementById('color').value.trim();
-    const qty = parseInt(document.getElementById('qty').value, 10);
-    const address = document.getElementById('address').value.trim();
-
-    try {
-      // save to DB
-      const ordersRef = ref(db, 'orders');
-      const newRef = push(ordersRef);
-      const data = {
-        id: newRef.key,
-        userId: user.uid,
-        userEmail: user.email,
-        item, price, color, qty, address, img,
-        status: "Pending",
-        createdAt: Date.now()
-      };
-      await set(newRef, data);
-
-      // open WhatsApp with details
-      const phone = "YOUR_WHATSAPP_NUMBER";
-      const text = `New Order:
-Item: ${item}
-Price: ${price}
-Color: ${color}
-Qty: ${qty}
-Address: ${address}
-Customer: ${user.email}`;
-      window.open(`https://wa.me/${phone}?text=${encodeURIComponent(text)}`, "_blank");
-
-      document.getElementById('msg').textContent = "Order placed! We also sent details to WhatsApp.";
-    } catch (err) {
-      document.getElementById('msg').textContent = err.message;
-    }
-  });
-</script>
+  <!-- Bottom Nav -->
+  <nav class="bottom-nav glass-card">
+    <a href="index.html">🏠 Home</a>
+    <a href="cart.html">🛒 Cart</a>
+    <a href="orders.html">📦 Orders</a>
+    <a href="account.html">👤 Account</a>
+  </nav>
 </body>
 </html>
