@@ -99,5 +99,5 @@ document.getElementById("orderNow").addEventListener("click", () => {
   const qty = quantityInput.value;
   const color = colorSelect.value;
   const msg = `Hello, I want to order:\n${productTitle.textContent}\nColor: ${color}\nQty: ${qty}`;
-  window.open(`https://wa.me/1234567890?text=${encodeURIComponent(msg)}`, "_blank");
+  window.open(`https://wa.me/+94768653486?text=${encodeURIComponent(msg)}`, "_blank");
 });
