@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>My Account</title>
   <link rel="stylesheet" href="style.css"/>
@@ -16,40 +16,44 @@
     <h2>My Account</h2>
   </header>
 
-  <!-- Profile Section -->
-  <div class="glass-card">
-    <h3>Profile</h3>
-    <div class="profile-pic">
-      <img id="profileImg" src="default-profile.png" alt="Profile">
-      <input type="file" id="uploadPic" accept="image/*">
-    </div>
-    <input type="text" id="firstName" placeholder="First Name">
-    <input type="text" id="lastName" placeholder="Last Name">
-    <input type="date" id="birthday">
-    <input type="email" id="email" placeholder="Email">
-    <input type="tel" id="phone" placeholder="Phone Number">
-    <select id="gender">
-      <option value="">Select Gender</option>
-      <option value="male">Male</option>
-      <option value="female">Female</option>
-    </select>
-  </div>
+  <main class="glass-card">
+    <!-- Profile Section -->
+    <section class="glass-subcard">
+      <h3>Profile</h3>
+      <div class="profile-pic">
+        <img id="profileImage" src="default-avatar.png" alt="Profile Picture">
+        <input type="file" id="uploadProfilePic" accept="image/*">
+      </div>
+      <label>First Name <input type="text" id="firstName"></label>
+      <label>Last Name <input type="text" id="lastName"></label>
+      <label>Email <input type="email" id="email"></label>
+      <label>Phone <input type="tel" id="phone"></label>
+      <label>Birthday <input type="date" id="birthday"></label>
+      <label>Gender 
+        <select id="gender">
+          <option value="">Select</option>
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+          <option value="other">Other</option>
+        </select>
+      </label>
+    </section>
 
-  <!-- Address Section -->
-  <div class="glass-card">
-    <h3>Addresses</h3>
-    <label>Home Address</label>
-    <textarea id="homeAddress" placeholder="Enter home address"></textarea>
+    <!-- Address Section -->
+    <section class="glass-subcard">
+      <h3>Addresses</h3>
+      <div id="addressList"></div>
+      <button id="addAddressBtn" class="btn-gold">+ Add New Address</button>
+    </section>
 
-    <label>Office Address</label>
-    <textarea id="officeAddress" placeholder="Enter office address"></textarea>
-  </div>
-
-  <!-- Settings -->
-  <div class="glass-card">
-    <h3>Settings</h3>
-    <button id="toggleTheme" class="btn-gold">Switch Theme</button>
-  </div>
+    <!-- Settings Section -->
+    <section class="glass-subcard">
+      <h3>Settings</h3>
+      <label>
+        <input type="checkbox" id="darkModeToggle"> Dark Mode
+      </label>
+    </section>
+  </main>
 
   <!-- Bottom Nav -->
   <nav class="bottom-nav glass-card">
