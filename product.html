@@ -1,32 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Product</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Product Details</title>
+  <link rel="stylesheet" href="style.css" />
+  <script type="module" src="product.js"></script>
 </head>
 <body>
-<a href="index.html">← Back</a>
-<h1 id="title"></h1>
-<img id="img" width="250" alt="product"><br>
-<p id="price"></p>
-<p id="desc"></p>
-<p><a id="checkout">Go to Checkout</a></p>
+  <!-- Wallpaper background -->
+  <div class="wallpaper"></div>
 
-<script>
-  const qs = new URLSearchParams(location.search);
-  const item = qs.get('item');
-  const price = qs.get('price');
-  const desc = qs.get('desc');
-  const img = qs.get('img');
+  <!-- Header -->
+  <header class="glass-header">
+    <img src="logo.png" alt="Logo" class="logo">
+    <h2 id="productName">Loading...</h2>
+  </header>
 
-  document.getElementById('title').textContent = item;
-  document.getElementById('price').textContent = "Price: " + price;
-  document.getElementById('desc').textContent = desc;
-  document.getElementById('img').src = img;
+  <!-- Product Slideshow -->
+  <div class="slideshow glass-card" id="slideshow"></div>
 
-  const toCheckout = `checkout.html?item=${encodeURIComponent(item)}&price=${encodeURIComponent(price)}&img=${encodeURIComponent(img)}`;
-  document.getElementById('checkout').href = toCheckout;
-</script>
+  <!-- Product Info -->
+  <div class="glass-card product-info">
+    <h3 id="productTitle"></h3>
+    <p id="productDesc"></p>
+    <p><span id="productPrice"></span> <span id="productDiscount"></span></p>
+    <p>⭐ <span id="productRating"></span>/5</p>
+
+    <label>Color:
+      <select id="colorSelect"></select>
+    </label>
+    <label>Quantity:
+      <input type="number" id="quantity" value="1" min="1" max="50">
+    </label>
+
+    <div class="actions">
+      <button id="addToCart" class="btn-gold">Add to Cart</button>
+      <button id="orderNow" class="btn-rose">Order Now</button>
+    </div>
+  </div>
+
+  <!-- Bottom Nav -->
+  <nav class="bottom-nav glass-card">
+    <a href="index.html">🏠 Home</a>
+    <a href="cart.html">🛒 Cart</a>
+    <a href="orders.html">📦 Orders</a>
+    <a href="account.html">👤 Account</a>
+  </nav>
 </body>
 </html>
