@@ -1,161 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Panel</title>
-  <link rel="stylesheet" href="../style.css"/>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/lucide@latest"></script>
 </head>
-<body class="admin-body">
-  <div class="wallpaper"></div>
-
-  <div class="admin-shell">
+<body>
+  <div class="admin-container">
     <!-- Sidebar -->
-    <aside class="admin-sidebar glass">
-      <div class="brand">
-        <img src="../logo.png" alt="logo"><strong>Admin</strong>
-      </div>
+    <aside class="sidebar">
+      <h2>Admin</h2>
       <nav>
-        <a href="#dashboard" data-section="dashboard" class="active"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
-        <a href="#products"  data-section="products"><i class="fa-solid fa-bag-shopping"></i> Products</a>
-        <a href="#orders"    data-section="orders"><i class="fa-solid fa-truck-fast"></i> Orders</a>
-        <hr class="divider">
-        <a href="../index.html"><i class="fa-solid fa-right-from-bracket"></i> Exit</a>
+        <ul>
+          <li><a href="#dashboard"><i data-lucide="layout-dashboard"></i> Dashboard</a></li>
+          <li><a href="#products"><i data-lucide="package"></i> Products</a></li>
+          <li><a href="#orders"><i data-lucide="shopping-cart"></i> Orders</a></li>
+        </ul>
       </nav>
     </aside>
 
-    <!-- Main -->
-    <main class="admin-main">
-      <!-- DASHBOARD -->
-      <section id="dashboard" class="admin-section active">
-        <h2>Dashboard</h2>
-        <div id="stats" class="grid stats"></div>
-
-        <div class="toolbar">
-          <h3>Today’s Orders</h3>
-          <button id="exportOrdersCSV" class="btn btn-outline">
-            <i class="fa-solid fa-file-csv"></i> Export Orders CSV
-          </button>
-        </div>
-        <div id="todayOrders" class="grid list"></div>
-      </section>
-
-      <!-- PRODUCTS -->
-      <section id="products" class="admin-section">
-        <div class="toolbar">
-          <h2>Products</h2>
-          <div class="row">
-            <div class="searchbar">
-              <i class="fa-solid fa-magnifying-glass"></i>
-              <input id="prodSearch" placeholder="Search by name or category…"/>
-            </div>
-            <select id="prodCategoryFilter">
-              <option value="">All categories</option>
-            </select>
-            <button id="exportProductsCSV" class="btn btn-outline">
-              <i class="fa-solid fa-file-csv"></i> Export Products CSV
-            </button>
-            <button id="resetForm" class="btn btn-outline">
-              <i class="fa-solid fa-rotate-left"></i> Reset form
-            </button>
-          </div>
-        </div>
-
-        <div class="chips" id="categoryChips"></div>
-
-        <div class="two-col">
-          <!-- Product List -->
-          <div class="glass">
-            <div class="toolbar compact">
-              <div class="pill"><i class="fa-solid fa-layer-group"></i> <span id="prodCount">0</span> items</div>
-            </div>
-            <div id="productList" class="list padded"></div>
-          </div>
-
-          <!-- Product Form -->
-          <form id="productForm" class="glass form padded">
-            <h3><i class="fa-solid fa-square-plus"></i> Add / Edit Product</h3>
-            <input type="hidden" id="editId" />
-            <label>Name
-              <input id="pName" required placeholder="e.g., Luxury Bag"/>
-            </label>
-            <label>Category
-              <input id="pCategory" placeholder="e.g., bags"/>
-            </label>
-            <label>Price
-              <input id="pPrice" type="number" min="0" step="1" required/>
-            </label>
-            <label>Discount (%)
-              <input id="pDiscount" type="number" min="0" max="95" value="0"/>
-            </label>
-            <label>Colors (comma separated)
-              <input id="pColors" placeholder="Black, White, Red"/>
-            </label>
-            <label>Description
-              <textarea id="pDesc" rows="4" placeholder="Short description"></textarea>
-            </label>
-
-            <label>Images (upload multiple)
-              <input id="pImages" type="file" accept="image/*" multiple />
-            </label>
-            <div id="imageThumbs" class="thumbs"></div>
-
-            <div class="row">
-              <button type="submit" class="btn btn-gold">
-                <i class="fa-solid fa-cloud-arrow-up"></i> Save Product
-              </button>
-              <button type="button" id="deleteCurrent" class="btn btn-rose">
-                <i class="fa-solid fa-trash"></i> Delete
-              </button>
-            </div>
-          </form>
-        </div>
-      </section>
-
-      <!-- ORDERS -->
-      <section id="orders" class="admin-section">
-        <div class="toolbar">
-          <h2>Orders</h2>
-          <div class="row">
-            <div class="tabs">
-              <div class="tab active" data-status="pending"><i class="fa-solid fa-clock"></i> Pending</div>
-              <div class="tab" data-status="accepted"><i class="fa-solid fa-check"></i> Accepted</div>
-              <div class="tab" data-status="delivered"><i class="fa-solid fa-box"></i> Delivered</div>
-              <div class="tab" data-status="cancelled"><i class="fa-solid fa-ban"></i> Cancelled (7 days)</div>
-            </div>
-            <select id="paymentFilter">
-              <option value="">All payments</option>
-              <option value="COD">COD</option>
-              <option value="BANK">Bank</option>
-            </select>
-            <div class="searchbar wide">
-              <i class="fa-solid fa-hashtag"></i>
-              <input id="orderIdSearch" placeholder="Search by Order ID…"/>
-            </div>
-            <button id="exportOrdersCSV2" class="btn btn-outline">
-              <i class="fa-solid fa-file-csv"></i> Export Orders CSV
-            </button>
-          </div>
-        </div>
-        <div id="orderList" class="grid list"></div>
-      </section>
-
-      <!-- SETTINGS (placeholder for future) -->
-      <section id="settings" class="admin-section">
-        <h2>Settings</h2>
-        <p>Coming soon.</p>
-      </section>
+    <!-- Main content -->
+    <main class="main-content">
+      <div id="content">
+        <!-- Router will load pages here -->
+      </div>
     </main>
   </div>
 
-  <!-- Scripts -->
-  <script type="module" src="./js/firebase.js"></script>
-  <script type="module" src="./js/utils.js"></script>
-  <script type="module" src="./js/router.js"></script>
-  <script type="module" src="./js/dashboard.js"></script>
-  <script type="module" src="./js/products.js"></script>
-  <script type="module" src="./js/orders.js"></script>
-  <script type="module" src="./js/main.js"></script>
+  <script src="js/firebase.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script src="js/products.js"></script>
+  <script src="js/orders.js"></script>
+  <script src="js/router.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
 </body>
 </html>
