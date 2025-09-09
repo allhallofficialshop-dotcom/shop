@@ -1,46 +1,183 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
   <title>Admin Panel</title>
   <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+  <style>
+    :root{
+      --glass-bg: rgba(255,255,255,.08);
+      --glass-brd: rgba(255,255,255,.16);
+      --fg: #fff;
+    }
+    body{display:flex;min-height:100vh;color:var(--fg);}
+    .wallpaper{position:fixed;inset:0;background:url('wall.png') center/cover no-repeat;filter:brightness(.6);}
+    .glass{backdrop-filter:blur(14px);background:var(--glass-bg);border:1px solid var(--glass-brd);border-radius:24px;}
+    .pill{padding:4px 10px;border-radius:999px;border:1px solid var(--glass-brd);}
+    .btn{border:none;padding:10px 14px;border-radius:12px;cursor:pointer}
+    .btn-gold{background:linear-gradient( to bottom right, #caa75a, #a07c2b );color:#111}
+    .btn-rose{background:linear-gradient( to bottom right, #f5b5c8, #ce859a );color:#111}
+    .btn-outline{background:transparent;border:1px solid var(--glass-brd);color:inherit}
+    .admin-shell{position:relative;display:flex;width:100%}
+    .admin-sidebar{width:260px;padding:20px}
+    .admin-sidebar .brand{display:flex;align-items:center;gap:10px;margin-bottom:18px}
+    .admin-sidebar .brand img{height:32px}
+    .admin-sidebar a{display:flex;align-items:center;gap:10px;padding:10px 12px;margin:6px 0;border-radius:14px;text-decoration:none;color:inherit}
+    .admin-sidebar a.active,.admin-sidebar a:hover{background:rgba(255,255,255,.08)}
+    .admin-main{flex:1;padding:24px;overflow:auto}
+    .admin-section{display:none}
+    .admin-section.active{display:block}
+    .grid{display:grid;gap:14px}
+    .stats{grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
+    .stat{padding:18px;border-radius:18px}
+    .toolbar{display:flex;justify-content:space-between;align-items:center;margin:14px 0;gap:12px;flex-wrap:wrap}
+    .list{display:grid;gap:12px}
+    .item{padding:14px;border-radius:16px}
+    .two-col{display:grid;grid-template-columns:1fr 420px;gap:18px}
+    @media(max-width:1000px){.admin-sidebar{position:fixed;z-index:5;height:100vh}.admin-main{margin-left:260px}.two-col{grid-template-columns:1fr}}
+    .form{display:grid;gap:12px}
+    .form label{display:grid;gap:6px;font-size:.95rem}
+    .form input,.form textarea,.form select{padding:10px 12px;border-radius:12px;border:1px solid var(--glass-brd);background:rgba(0,0,0,.25);color:inherit}
+    .thumbs{display:flex;flex-wrap:wrap;gap:10px}
+    .thumbs img{height:64px;width:64px;object-fit:cover;border-radius:12px;border:1px solid var(--glass-brd)}
+    .tabs{display:flex;gap:8px;flex-wrap:wrap}
+    .tab{padding:8px 12px;border-radius:12px;border:1px solid var(--glass-brd);cursor:pointer}
+    .tab.active{background:rgba(255,255,255,.12)}
+    .searchbar{display:flex;gap:8px;align-items:center}
+    .searchbar input{flex:1}
+    .chips{display:flex;gap:8px;flex-wrap:wrap}
+    .chip{padding:6px 10px;border-radius:999px;border:1px solid var(--glass-brd);cursor:pointer}
+    .chip.active{background:rgba(255,255,255,.12)}
+    .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  </style>
+
   <script type="module" src="admin.js"></script>
 </head>
-<body class="admin-body">
+<body>
   <div class="wallpaper"></div>
 
-  <!-- Sidebar -->
-  <aside class="admin-sidebar glass-card">
-    <h2>Admin</h2>
-    <ul>
-      <li><a href="#dashboard" class="active">📊 Dashboard</a></li>
-      <li><a href="#products">👜 Products</a></li>
-      <li><a href="#orders">📦 Orders</a></li>
-    </ul>
-  </aside>
+  <div class="admin-shell">
+    <!-- Sidebar -->
+    <aside class="admin-sidebar glass">
+      <div class="brand">
+        <img src="logo.png" alt="logo"><strong>Admin</strong>
+      </div>
+      <nav>
+        <a href="#dashboard" data-section="dashboard" class="active"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+        <a href="#products"  data-section="products"><i class="fa-solid fa-bag-shopping"></i> Products</a>
+        <a href="#orders"    data-section="orders"><i class="fa-solid fa-truck-fast"></i> Orders</a>
+        <hr style="border-color:rgba(255,255,255,.12)">
+        <a href="index.html"><i class="fa-solid fa-right-from-bracket"></i> Exit</a>
+      </nav>
+    </aside>
 
-  <!-- Main Content -->
-  <main class="admin-main">
-    <!-- Dashboard -->
-    <section id="dashboard" class="admin-section">
-      <h2>Dashboard</h2>
-      <div id="stats" class="stats-grid"></div>
-      <div id="todayOrders" class="glass-card"></div>
-    </section>
+    <!-- Main -->
+    <main class="admin-main">
+      <!-- Dashboard -->
+      <section id="dashboard" class="admin-section active">
+        <h2>Dashboard</h2>
+        <div id="stats" class="grid stats"></div>
 
-    <!-- Products -->
-    <section id="products" class="admin-section hidden">
-      <h2>Products</h2>
-      <button id="addProductBtn" class="btn-gold">+ Add Product</button>
-      <div id="productList"></div>
-    </section>
+        <div class="toolbar">
+          <h3>Today’s Orders</h3>
+          <button id="exportOrdersCSV" class="btn btn-outline"><i class="fa-solid fa-file-csv"></i> Export Orders CSV</button>
+        </div>
+        <div id="todayOrders" class="grid list"></div>
+      </section>
 
-    <!-- Orders -->
-    <section id="orders" class="admin-section hidden">
-      <h2>Orders</h2>
-      <div id="orderList"></div>
-    </section>
-  </main>
+      <!-- Products -->
+      <section id="products" class="admin-section">
+        <div class="toolbar">
+          <h2>Products</h2>
+          <div class="row">
+            <div class="searchbar">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input id="prodSearch" placeholder="Search by name or category…"/>
+            </div>
+            <select id="prodCategoryFilter">
+              <option value="">All categories</option>
+            </select>
+            <button id="exportProductsCSV" class="btn btn-outline"><i class="fa-solid fa-file-csv"></i> Export Products CSV</button>
+            <button id="resetForm" class="btn btn-outline"><i class="fa-solid fa-rotate-left"></i> Reset form</button>
+          </div>
+        </div>
+
+        <div class="chips" id="categoryChips"></div>
+
+        <div class="two-col">
+          <!-- List -->
+          <div class="glass">
+            <div class="toolbar" style="padding:12px 16px;">
+              <div class="pill"><i class="fa-solid fa-layer-group"></i> <span id="prodCount">0</span> items</div>
+            </div>
+            <div id="productList" class="list" style="padding:12px;"></div>
+          </div>
+
+          <!-- Form -->
+          <form id="productForm" class="glass form" style="padding:16px;">
+            <h3><i class="fa-solid fa-square-plus"></i> Add / Edit Product</h3>
+            <input type="hidden" id="editId" />
+            <label>Name
+              <input id="pName" required placeholder="e.g., Luxury Bag"/>
+            </label>
+            <label>Category
+              <input id="pCategory" placeholder="e.g., bags"/>
+            </label>
+            <label>Price
+              <input id="pPrice" type="number" min="0" step="1" required/>
+            </label>
+            <label>Discount (%)
+              <input id="pDiscount" type="number" min="0" max="95" value="0"/>
+            </label>
+            <label>Colors (comma separated)
+              <input id="pColors" placeholder="Black, White, Red"/>
+            </label>
+            <label>Description
+              <textarea id="pDesc" rows="4" placeholder="Short description"></textarea>
+            </label>
+
+            <label>Images (upload multiple)
+              <input id="pImages" type="file" accept="image/*" multiple />
+            </label>
+            <div id="imageThumbs" class="thumbs"></div>
+
+            <div style="display:flex; gap:10px; margin-top:6px;">
+              <button type="submit" class="btn btn-gold"><i class="fa-solid fa-cloud-arrow-up"></i> Save Product</button>
+              <button type="button" id="deleteCurrent" class="btn btn-rose"><i class="fa-solid fa-trash"></i> Delete</button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- Orders -->
+      <section id="orders" class="admin-section">
+        <div class="toolbar">
+          <h2>Orders</h2>
+          <div class="row">
+            <div class="tabs">
+              <div class="tab active" data-status="pending"><i class="fa-solid fa-clock"></i> Pending</div>
+              <div class="tab" data-status="accepted"><i class="fa-solid fa-check"></i> Accepted</div>
+              <div class="tab" data-status="delivered"><i class="fa-solid fa-box"></i> Delivered</div>
+              <div class="tab" data-status="cancelled"><i class="fa-solid fa-ban"></i> Cancelled (7 days)</div>
+            </div>
+            <select id="paymentFilter">
+              <option value="">All payments</option>
+              <option value="COD">COD</option>
+              <option value="BANK">Bank</option>
+            </select>
+            <div class="searchbar" style="min-width:260px">
+              <i class="fa-solid fa-hashtag"></i>
+              <input id="orderIdSearch" placeholder="Search by Order ID…"/>
+            </div>
+            <button id="exportOrdersCSV2" class="btn btn-outline"><i class="fa-solid fa-file-csv"></i> Export Orders CSV</button>
+          </div>
+        </div>
+        <div id="orderList" class="grid list"></div>
+      </section>
+    </main>
+  </div>
 </body>
 </html>
